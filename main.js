@@ -2,17 +2,22 @@ const RustPlus = require('@liamcottle/rustplus.js');
 const fs = require('fs');
 const { createCanvas, loadImage } = require('canvas');
 const axios = require('axios');
+const { Client, GatewayIntentBits } = require('discord.js');
+require('dotenv').config(); 
 
-const rustplus = new RustPlus('104.234.180.19', '24071', '76561199087358895', '');
-const webhookUrl_CP = ''; // webhooks here , multiple webhooks 
+
+const rustplus = new RustPlus('104.234.180.19', '24071', '76561199087358895', 'playertoken here'); //ip , port , steamid , playertoken (Acquire From FCM Listen when pairing)
+const webhookUrl_CP = ''; // webhooks here
 const webhookUrl_K9 = '';
 
 const webhookurl_array = [webhookUrl_CP ,webhookUrl_K9 ];
 
+const sorahubplustoken = ''
 
 rustplus.connect();
 
 const gridDiameter = 146.25;
+
 
 function sendDiscordWebhookMessage(webhookUrl, content) {
     const message = {
@@ -280,7 +285,9 @@ rustplus.on('connected', async () => {
                 }  else if (marker.type === 5) { // CargoShip
                     console.log(lastCargoShipSpawned);
                     if (!lastCargoShipSpawned) {
-                        rustplus.sendTeamMessage(`Cargo Ship has spawned !`);
+                        rustplus.sendTeamMessage(`Cargo Ship spawned !`);
+                        sendDiscordWebhookMessage(webhookurl_array, `Cargo Ship spawned!`);
+                        
                         lastCargoShipSpawned = true; // Update the flag
                     }
                     const markerData = {
@@ -333,7 +340,9 @@ rustplus.on('connected', async () => {
                 } else if (marker.type === 8) { // PatrolHelicopter
 
                     if (!lastPatrolHeliSpawned) {
-                        rustplus.sendTeamMessage('Patrol Helicopter has spawned!');
+                        // rustplus.sendTeamMessage('Patrol Helicopter has spawned!');
+                        rustplus.sendTeamMessage(`Patrol Helicopter has spawned at ${getGridPos(marker.x, marker.y, mapSize)}`);
+                        sendDiscordWebhookMessage(webhookurl_array, `Patrol Helicopter has spawned at ${getGridPos(marker.x, marker.y, mapSize)}`);
                         lastPatrolHeliSpawned = true; // Update the flag
                     }
 
@@ -370,7 +379,7 @@ rustplus.on('connected', async () => {
                     y: marker.y,
                     type: marker.type,
                 };
-                if (marker.type === 0) {
+                if (marker.type === 0) { // last death
                     const parsedCoordinates = calculateImageXY(markerData, width, height, oceanMargin, mapSize);
                     ctx.beginPath();
                     ctx.arc(parsedCoordinates.x, parsedCoordinates.y, 5, 0, Math.PI * 2);
@@ -379,7 +388,7 @@ rustplus.on('connected', async () => {
                     ctx.font = '20px Consolas';
                     ctx.fillStyle = 'red';
                     ctx.fillText(`Last Death`, parsedCoordinates.x + 6, parsedCoordinates.y + 6);
-                } else if (marker.type === 1) {
+                } else if (marker.type === 1) { // player marker
                     const parsedCoordinates = calculateImageXY(markerData, width, height, oceanMargin, mapSize);
                     ctx.beginPath();
                     ctx.arc(parsedCoordinates.x, parsedCoordinates.y, 5, 0, Math.PI * 2);
@@ -418,7 +427,51 @@ rustplus.on('connected', async () => {
             console.error('Error retrieving data:', error);
         }
     }, 3000);
+
+    // Create a new client instance
+    const client = new Client({
+        intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]
+    });
+
+    // When the bot is ready, log a message to the console
+    client.once('ready', () => {
+        console.log(`Logged in as ${client.user.tag}!`);
+    });
+
+    // Listen for messages and respond to commands
+    client.on('messageCreate', message => {
+        // Ignore messages from bots or messages without the "!" prefix
+        if (message.author.bot || !message.content.startsWith('!')) return;
+
+        // Get the command and arguments
+        const args = message.content.slice(1).trim().split(/ +/);
+        const command = args.shift().toLowerCase();
+
+        // Handle commands
+        // console.log(command);
+        if (command === 'serverinfo') { 
+            response = {
+                "Server Name": serverInfoResponse.info.name,
+                "Server Map Size": serverInfoResponse.info.mapSize,
+                "Server Current Players": serverInfoResponse.info.players,
+                "Server Max Players": serverInfoResponse.info.maxPlayers,
+                "Server Queued Players": serverInfoResponse.info.queuedPlayers,
+            }
+
+            message.reply(`Server Info: ${JSON.stringify(response, null, 2)}`);
+        } else if (command === 'cock') {
+            message.reply("cock");
+        } else if (command === 'help') {
+            message.reply("Available commands: `!ServerInfo`, `!cock`, `!help`");
+        } else {
+            message.reply("Unknown command! Type `!help` to see available commands.");
+        }
+    });
+
+    // Log in to Discord with the token from your .env file
+    client.login(process.env.SORAHUBPLUSTOKEN);
 });
 
 rustplus.on('disconnected', () => console.log('Disconnected from RustPlus server'));
 rustplus.on('error', (error) => console.error('WebSocket error:', error));
+
