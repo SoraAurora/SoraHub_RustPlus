@@ -1,6 +1,6 @@
-# SoraHub Rust+ Integration 
+# SoraHub_RustPlus_V1.1
+![map_with_players](https://github.com/user-attachments/assets/fd610130-abd6-42bd-a708-47458acee283)
 
-![map_with_players](https://github.com/user-attachments/assets/bd69fcca-009c-4c46-891d-97587fe44040)
 # How to use
 1. npx @liamcottle/rustplus.js fcm-register
 2. npx @liamcottle/rustplus.js fcm-listen
@@ -76,7 +76,24 @@ Player: muffetasher - Status: Alive
 Player: lBigC - Status: Alive
 ```
 
+# Change Log
+3/11/2024 - V1.1
+- Add Discord Integration
+- acertain map grid coordinates via x & y coords
+- Added Broken Logic :fire: for cargo not done yet its like 3am im going to get food and push this
+- Added Team/Personal Marker to Map
+- Added Last Death to Map
+- Added Capability of tracking heli , cargo , chinook  on map
+
+
+2/11/2024 - Release
+- Released SoraHub_RustPlus 
+- capable of tracking teammates alive status on a map
+
+
 # TODO
-1. Add Discord Integration
-2. Add Notifications pipe to chat
-3. acertain map grid coordinates via x & y coords
+1. Improve Discord Integration
+2. Finish Implementation for Notifications pipe to chat
+3. Added Tracking of locked crates
+4. Timer for Locked Crates / Heli / Cargo & Etc.
+
