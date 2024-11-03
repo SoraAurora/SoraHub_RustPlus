@@ -9,6 +9,10 @@
 3. idk im too lazy to document read it :D
 
 # Change Log
+4/11/2024 - V1.2
+- Improved Discord Integration
+- Fixed some broken Logic
+
 3/11/2024 - V1.1
 - Add Discord Integration
 - acertain map grid coordinates via x & y coords
