@@ -6,13 +6,11 @@ const { Client, GatewayIntentBits } = require('discord.js');
 require('dotenv').config(); 
 
 
-const rustplus = new RustPlus('104.234.180.19', '24071', '76561199087358895', 'playertoken here'); //ip , port , steamid , playertoken (Acquire From FCM Listen when pairing)
-const webhookUrl_CP = ''; // webhooks here
+const rustplus = new RustPlus('104.234.180.19', '24071', '76561199087358895', 'playertoken');
+const webhookUrl_CP = ''';
 const webhookUrl_K9 = '';
 
 const webhookurl_array = [webhookUrl_CP ,webhookUrl_K9 ];
-
-const sorahubplustoken = ''
 
 rustplus.connect();
 
@@ -140,9 +138,9 @@ rustplus.on('connected', async () => {
                 if (!member.isAlive && member.isOnline) {
                     // If a member is dead and not already in the deadPlayers set, send a message
                     if (!deadPlayers.has(member.name)) {
-                        rustplus.sendTeamMessage(`Clan - [${member.name}] - Died at ${getGridPos(member.x, member.y, mapSize)}`);
+                        rustplus.sendTeamMessage(`Clan - [${member.name}] - Died @ ${getGridPos(member.x, member.y, mapSize)}`);
                         // Send Discord Webhook Message
-                        sendDiscordWebhookMessage(webhookurl_array, `Clan - [${member.name}] - Died at ${getGridPos(member.x, member.y, mapSize)}`);
+                        sendDiscordWebhookMessage(webhookurl_array, `Clan - [${member.name}] - Died @ ${getGridPos(member.x, member.y, mapSize)}`);
                         deadPlayers.add(member.name); // Add to dead players set
                     }
                 } else if (member.isOnline) {
@@ -283,7 +281,7 @@ rustplus.on('connected', async () => {
                     ctx.fillText("Chinook", parsedCoordinates.x + 6, parsedCoordinates.y + 6);
 
                 }  else if (marker.type === 5) { // CargoShip
-                    console.log(lastCargoShipSpawned);
+                    //console.log(lastCargoShipSpawned);
                     if (!lastCargoShipSpawned) {
                         rustplus.sendTeamMessage(`Cargo Ship spawned !`);
                         sendDiscordWebhookMessage(webhookurl_array, `Cargo Ship spawned!`);
@@ -340,9 +338,11 @@ rustplus.on('connected', async () => {
                 } else if (marker.type === 8) { // PatrolHelicopter
 
                     if (!lastPatrolHeliSpawned) {
-                        // rustplus.sendTeamMessage('Patrol Helicopter has spawned!');
-                        rustplus.sendTeamMessage(`Patrol Helicopter has spawned at ${getGridPos(marker.x, marker.y, mapSize)}`);
-                        sendDiscordWebhookMessage(webhookurl_array, `Patrol Helicopter has spawned at ${getGridPos(marker.x, marker.y, mapSize)}`);
+                        rustplus.sendTeamMessage('Patrol Helicopter has spawned!');
+                        sendDiscordWebhookMessage(webhookurl_array, `Patrol Helicopter has spawned!`);
+
+                        // rustplus.sendTeamMessage(`Patrol Helicopter has spawned at ${getGridPos(marker.x, marker.y, mapSize)}`);
+                        // sendDiscordWebhookMessage(webhookurl_array, `Patrol Helicopter has spawned @ ${getGridPos(marker.x, marker.y, mapSize)}`);
                         lastPatrolHeliSpawned = true; // Update the flag
                     }
 
