@@ -1,6 +1,7 @@
-# SoraHub_RustPlus_V1.1
+# SoraHub_RustPlus 
 
 ![map_with_players](https://github.com/user-attachments/assets/a6bec079-7dd4-4e5c-8c3e-fe20bbf6b071)
+![{441C56FA-E7D8-472B-B884-6FD6F4571251}](https://github.com/user-attachments/assets/f80a6416-2677-47ee-b063-00e07b4bc8dd)
 
 # How to use
 1. npx @liamcottle/rustplus.js fcm-register
